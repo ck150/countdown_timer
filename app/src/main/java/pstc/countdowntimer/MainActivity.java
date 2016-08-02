@@ -96,10 +96,15 @@ public class MainActivity extends AppCompatActivity {
 
     public void startTimer(View v){
         if(sharedPreferences.getBoolean(TimerService.SERVICE_RUNNING_FLAG,false)==false){
+            String secs_edit = secondsEdit.getText().toString();
+            if(secs_edit.equals("")){
+                Toast.makeText(this,"Enter some value",Toast.LENGTH_SHORT).show();
+                return;
+            }
             sharedPreferences.edit().putBoolean(TimerService.SERVICE_RUNNING_FLAG,true).apply();
             Intent i = new Intent(this,TimerService.class);
             i.setAction(action_start);
-            i.putExtra(TimerService.SECONDS_TIMER, secondsEdit.getText().toString());
+            i.putExtra(TimerService.SECONDS_TIMER, secs_edit);
             startService(i);
             ServiceRunning = true;
             secondsEdit.clearFocus();
@@ -115,8 +120,18 @@ public class MainActivity extends AppCompatActivity {
             timerService = TimerService.getInstance();
             timerService.stopSelf();
             timerService.countDownTimer.cancel();
+            timerService=null;
         }
 
+    }
+
+
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+        if(timerService!=null){
+            timerService=null;
+        }
     }
 
 

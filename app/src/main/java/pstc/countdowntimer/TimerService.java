@@ -143,6 +143,8 @@ public class TimerService extends Service {
 
     public static void stopService(){
         serviceInstance.stopSelf();
+        serviceInstance = null;
+
     }
 
 
